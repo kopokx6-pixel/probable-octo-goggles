@@ -1,0 +1,35 @@
+name: YouTube Views Bot
+
+on:
+  workflow_dispatch:  # تشغيل يدوي من زر "Run workflow"
+
+jobs:
+  start-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. سحب الكود من المستودع
+        uses: actions/checkout@v4
+
+      - name: 2. تجهيز بيئة بايثون
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 3. تثبيت المكتبات المطلوبة
+        run: |
+          pip install -r requirements.txt
+
+      - name: 4. تثبيت متصفح Chrome (للتأكيد)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: 5. تشغيل البوت
+        run: python bot.py
+        env:
+          # هذه المتغيرات ستُستخدم داخل الكود لتعديل الإعدادات بسهولة
+          HEADLESS: "true"
+          NUMBER_OF_SESSIONS: "5"        # عدد الجلسات
+          WATCH_DURATION: "60"           # مدة المشاهدة بالثواني
+          MAX_WORKERS: "2"               # عدد المتصفحات المتوازية (خفّضها لو علق)
